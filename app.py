@@ -14,8 +14,8 @@ from flask import Flask, request
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_CHAT_ID = int(os.getenv("ADMIN_CHAT_ID", "0"))
 
-REG_LINK = "https://gg88k.xyz"
-WEBAPP_LINK = "https://gg88k.xyz"  # hiện chưa dùng, để sẵn
+REG_LINK = "https://GG880.VIP"
+WEBAPP_LINK = "https://GG880.VIP"  # hiện chưa dùng, để sẵn
 
 # Keep-alive
 ENABLE_KEEP_ALIVE = os.getenv("ENABLE_KEEP_ALIVE", "false").lower() == "true"
@@ -458,7 +458,7 @@ def handle_text(message):
             "Mình vào GG88 lên vốn theo mốc để nhận khuyến mãi giúp em nhé.\n\n"
             "Lên thành công mình gửi *ảnh chuyển khoản* để em cộng điểm trực tiếp vào tài khoản cho mình ạ.\n\n"
             "Có bất cứ thắc mắc gì nhắn tin trực tiếp cho CSKH GG88:\n"
-            "👉 [Thùy Nhi CSKH GG88](https://t.me/thuynhi247)\n"
+            "👉 [MỸ MỸ CSKH GG88](https://t.me/mymygg88)\n"
         )
 
         try:
