@@ -404,33 +404,6 @@ def handle_text(message):
     text = message.text.strip()
     state = user_state.get(chat_id)
 
-    # --- WAITING_GAME ---
-    if isinstance(state, dict) and state.get("state") == "WAITING_GAME":
-        game_type = text
-        try:
-            tg_username = f"@{message.from_user.username}" if message.from_user.username else "Không có"
-            time_str = datetime.now().strftime("%H:%M:%S %d/%m/%Y")
-
-            bot.send_photo(
-                ADMIN_CHAT_ID,
-                state["receipt_file_id"],
-                caption=(
-                    "📩 KHÁCH GỬI CHUYỂN KHOẢN + CHỌN TRÒ CHƠI\n\n"
-                    f"👤 Telegram: {tg_username}\n"
-                    f"🧾 Tên tài khoản: {state.get('username_game', '(không rõ)')}\n"
-                    f"🆔 Chat ID: {chat_id}\n"
-                    f"🎯 Trò chơi: {game_type}\n"
-                    f"⏰ Thời gian: {time_str}"
-                )
-            )
-
-            bot.send_message(chat_id, "✅ Em đã nhận đủ thông tin, em xử lý và cộng điểm cho mình ngay nhé ạ ❤️")
-        except Exception as e:
-            print("Lỗi gửi admin:", e)
-            bot.send_message(chat_id, "⚠️ Em gửi thông tin bị lỗi, mình đợi em 1 chút hoặc nhắn CSKH giúp em nhé ạ.")
-
-        user_state[chat_id] = None
-        return
 
     # --- WAITING_USERNAME ---
     if state == "WAITING_USERNAME":
@@ -510,18 +483,35 @@ def handle_media(message):
         return
 
     username_game = state.get("username_game")
+    tg_username = f"@{message.from_user.username}" if message.from_user.username else "Không có"
+    time_str = datetime.now().strftime("%H:%M:%S %d/%m/%Y")
 
-    user_state[chat_id] = {
-        "state": "WAITING_GAME",
-        "receipt_file_id": receipt_file_id,
-        "username_game": username_game
-    }
-
+    # Gửi phản hồi cho khách
     bot.send_message(
         chat_id,
-        "🔔Dạ trang vừa mới ra mắt đầu năm 2026 của liên minh KJC🧾 Bao lên khuyến mãi ạ, vui lòng nhắn tin admin đễ được hỗ trợ nhanh nhất anh chị nhé!",
+        "🔔Dạ trang vừa mới ra mắt đầu năm 2026 của liên minh KJC🧾 Bao lên khuyến mãi ạ, vui lòng nhắn tin admin để được hỗ trợ nhanh nhất anh chị nhé!",
         parse_mode="Markdown"
     )
+
+    # Gửi ảnh chuyển khoản cho admin ngay, không chờ khách nhắn thêm
+    try:
+        bot.send_photo(
+            ADMIN_CHAT_ID,
+            receipt_file_id,
+            caption=(
+                "📩 KHÁCH GỬI CHUYỂN KHOẢN\n\n"
+                f"👤 Telegram: {tg_username}\n"
+                f"🧾 Tên tài khoản: {username_game}\n"
+                f"🆔 Chat ID: {chat_id}\n"
+                f"⏰ Thời gian: {time_str}"
+            )
+        )
+    except Exception as e:
+        print("Lỗi gửi ảnh chuyển khoản cho admin:", e)
+        bot.send_message(chat_id, "⚠️ Em đã nhận ảnh, nhưng hệ thống gửi admin đang lỗi. Mình nhắn CSKH giúp em nhé ạ.")
+
+    user_state[chat_id] = None
+    return
 
 
 # ============ WEBHOOK FLASK ============
